@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Cookie, OrderItem, Order } from './types';
+import type { OrderItem, Order } from './types';
 
 interface OrdersState {
   cart: OrderItem[]; // Tracks active checkout items by cookieId and quantity

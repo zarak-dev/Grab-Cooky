@@ -1,15 +1,14 @@
-//import { useState } from 'react'
-import './App.css'
-import Cookie  from './store/inventorySlice';
-function App() {
-  console.log(Cookie);
-  
+import React from 'react';
+import { Home } from './containers/Home';
+import { Navbar } from './components/Layout/Navbar'; // If you want your navbar to show up too!
 
+function App() {
   return (
-    <>
-    <h1>Hello World</h1>
-    </>
-  )
+    <div>
+      <Navbar />
+      <Home />
+    </div>
+  );
 }
 
-export default App
+export default App;
