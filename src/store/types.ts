@@ -4,7 +4,7 @@ export interface Cookie {
   price: number;
   description: string;
   imageUrl: string;
-  isAvailable: boolean; 
+  isAvailable: boolean;
 }
 
 export interface OrderItem {

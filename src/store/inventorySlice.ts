@@ -1,78 +1,57 @@
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Cookie } from './types';
+import initialCookies from '../backend/inventory.json';
 
-const initialState: Cookie[] = [
-  {
-    id: 2,
-    name: "Classic Chocolate Chip",
-    price: 1290,
-    description: "Classic Chocolate Chip Cookies... The Perfect Bite of Nostalgia",
-    imageUrl: "/chocolate_chip.jpg",
-    isAvailable: true
-  },
-  {
-    id: 3,
-    name: "Pink Velvet",
-    price: 1350,
-    description: "A velvety cake batter cookie topped with a swirl of vanilla cream cheese frosting and pink velvet crumbs.",
-    imageUrl: "/pink-velvet.jpg",
-    isAvailable: true
-  },
-  {
-    id: 4,
-    name: "Chilled Sugar",
-    price: 1190,
-    description: "A vanilla sugar cookie served chilled and topped with a perfect swirl of sweet almond frosting.",
-    imageUrl: "/chilled-sugar.jpg",
-    isAvailable: true
-  },
-  {
-    id: 5,
-    name: "Milkshake Dream",
-    price: 1420,
-    description: "A chilled cookie featuring layers of malted milkshake mousse, whipped cream, and a cherry on top.",
-    imageUrl: "/milkshake-dream.jpg",
-    isAvailable: false // Setting some to false so you can test your Admin switches!
-  },
-  {
-    id: 6,
-    name: "Lotus Biscoff Lava",
-    price: 1490,
-    description: "A cookie packed with Biscoff cookie pieces, stuffed with melted Biscoff spread, and drizzled with white chocolate.",
-    imageUrl: "/lotus-lava.jpg",
-    isAvailable: true
-  },
-  {
-    id: 7,
-    name: "Double Chocolate Fudge",
-    price: 1290,
-    description: "A rich, dark chocolate cookie loaded with semi-sweet chunks and drizzled with a hot fudge glaze.",
-    imageUrl: "/Dark-Double-Chocolate.jpg",
-    isAvailable: true
-  },
-  {
-    id: 8,
-    name: "Peanut Butter Cup",
-    price: 1350,
-    description: "A classic peanut butter cookie topped with a pool of melted milk chocolate and crushed peanut butter cups.",
-    imageUrl: "/Peanut-Butter.jpg",
-    isAvailable: false
-  },
-  {
-    id: 9,
-    name: "Dulce de Leche",
-    price: 1390,
-    description: "A spiced cinnamon cookie layered with thick dulce de leche caramel and a smooth cream cheese swirl.",
-    imageUrl: "/dulce-de-leche.jpg",
-    isAvailable: true
-  },
-  {
-    id: 10,
-    name: "Lemon Meringue Pie",
-    price: 1450,
-    description: "A graham cracker crust cookie filled with tart lemon curd and topped with a toasted fluffy meringue swirl.",
-    imageUrl: "/lemon-meringue.jpg",
-    isAvailable: true
-  },
-];
+interface InventoryState {
+  cookies: Cookie[];
+  loading: boolean;
+  error: string | null;
+}
 
-export default initialState;
+const initialState: InventoryState = {
+  cookies: initialCookies as Cookie[],
+  loading: false,
+  error: null,
+};
+
+const inventorySlice = createSlice({
+  name: 'inventory',
+  initialState,
+  reducers: {
+    // 1. Toggle Admin Availability Switch
+    toggleAvailability: (state, action: PayloadAction<number>) => {
+      const cookie = state.cookies.find(c => c.id === action.payload);
+      if (cookie) {
+        cookie.isAvailable = !cookie.isAvailable;
+      }
+    },
+    
+    // 2. Add a new Cookie from a Dashboard Form
+    addNewCookie: (state, action: PayloadAction<Cookie>) => {
+      state.cookies.push(action.payload);
+    },
+
+    // 3. Delete a Cookie from the Dashboard Table
+    deleteCookie: (state, action: PayloadAction<number>) => {
+      state.cookies = state.cookies.filter(c => c.id !== action.payload);
+    },
+
+    // 4. Update existing cookie details (Price, Description, etc.)
+    updateCookieDetails: (state, action: PayloadAction<Cookie>) => {
+      const index = state.cookies.findIndex(c => c.id === action.payload.id);
+      if (index !== -1) {
+        state.cookies[index] = action.payload;
+      }
+    }
+  },
+});
+
+// Export the actions so your dashboard components can use dispatch()
+export const { 
+  toggleAvailability, 
+  addNewCookie, 
+  deleteCookie, 
+  updateCookieDetails 
+} = inventorySlice.actions;
+
+export default inventorySlice.reducer;
